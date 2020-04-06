@@ -25,16 +25,24 @@ int main(){
         cin >> n ;
         // cin >> m ;
         ll arr[n] ;
-        loop(0,n,i) cin >> arr[i];   
+        bool f=false, f2=false ;
+        loop(0,n,i){
+             cin >> arr[i];   
+             if(arr[i] == 1) f2=true;
+        }
 
-        int i=0,k=0;
-        while(arr[i] != 1) i++;
-        bool f=false ;
-        k=i-1;
-        loop(i,n,j){
+        int i=0,k=0, q=1;
+        while(arr[i] != 1 && i<n )   i++ ;
+        // k=i-1;
+        k=i;
+        if(k < 0) k=0;
+        loop(i+1,n,j){
+            // deb(arr[j]);
             if(arr[j] == 1){
                 if(j-k >= 6 ){
                     k=j;
+                    // deb("A");
+                    // f2=true;
                     continue ;
                 }
                 else{
@@ -43,7 +51,7 @@ int main(){
                 }
             } 
         }
-        if(f) cout << "NO" << endl ;
+        if(f || !f2) cout << "NO" << endl ;
         else cout << "YES" << endl ;
     }
 }
