@@ -42,8 +42,6 @@ int a[N][N];
 
 
 
-
-
 int main(){
     fastio ;
 
@@ -51,49 +49,117 @@ int main(){
     {
         ll a=0, b=0, c=0, d=0, e=0, p=0, q=0, r=0 ;
         ll ans=0, res=0, cnt=0, sum=0, diff=0, mul=1 ;
-        // loop(0,n,i) arr[i]=0;
-        // loop(0,n,i) brr[i]=0;
-        char s[100005];
+        
         ll n,m ;
         cin >> n ;
         cin >> m ;
-        // cin >> s ;
         ll arr[n], brr[n]; 
         mapp mp, mp1 ;
         loop(0,n,i){
             cin >> arr[i] ;
-            mp[arr[i]]=i;
+            mp[arr[i]]=i;   // gives information of each element old index
             brr[i]=arr[i];
         }
         sort(brr,brr+n);
+        vi vec;
         loop(0,n,i){
-            mp1[brr[i]]=i;
+            mp1[brr[i]]=i;  // gives information of each element new index (sorted one)
+            if(arr[i] != brr[i])
+                vec.pb(arr[i]);
         }
         vector<tuple<ll,ll,ll> >tp ;
+
         loop(0,n,i){
+            if(arr[i] == brr[i]) continue ;
+            else{
+                a = mp1[arr[i]] ;
+                b = mp[brr[i]] ;
+                if(brr[a] == arr[i] && brr[b] == arr[a] && brr[i] == arr[b]){   // all get good position
+                    arr[b] = arr[a] ; 
+                    arr[a] = arr[i] ;
+                    arr[i] = brr[i] ;
+                    mp[arr[b]] = b  ;
+                    mp[arr[a]] = a  ;
+                    tp.pb(make_tuple( i+1, a+1, b+1 ))  ;
+                    ans++ ;
+                }
+            }
+        }
+
+        loop(0,n,i){    // two get position
+            if(arr[i] == brr[i]) continue ;
+            else{
+                a = mp1[arr[i]] ;
+                b = mp[brr[i]] ;
+                if(a == b){
+                    continue ;
+                }
+                    arr[b] = arr[a] ; 
+                    arr[a] = arr[i] ;
+                    arr[i] = brr[i] ;
+                    mp[arr[b]] = b;
+                    mp[arr[a]] = a;
+                    tp.pb(make_tuple( i+1, a+1, b+1 ));
+                    ans++ ;
+            }
+        }
+
+        loop(0,n,i){        // only one get position 
             if(arr[i] == brr[i]) continue ;
             else{
                 a = mp1[arr[i]] ;
                 b = mp[brr[i]] ;
                 // c = mp[a] ;
                 // cout << i << " - " << a << " " << b << endl ;
-                if( arr[i] < arr[a] && arr[b] < arr[i]){
+                // if( arr[i] < arr[a] && arr[b] < arr[i]){
+                if(a == b){
+                //    deb("sd") 
+                    r=i+1;
+                    while(arr[r] == brr[r] && r<n) r++;
+                    if(r == a && r != n-1){
+                        r++;
+                        while(arr[r] == brr[r] && r<n) r++; 
+                    }
+                    if(r == n){
+                        p=1;
+                        break;
+                    }
+                    // if(r == a){
+                    //     p=1;
+                    //     break;
+                    // }    
+                    q = arr[r];
+                    arr[r] = arr[i]; 
+                    arr[i]=brr[i];
+                    arr[b] = q ;
+                    mp[arr[b]]=b;
+                    mp[arr[r]]=r;
+                    tp.pb(make_tuple( i+1, r+1, b+1 ));
+                    ans++ ;
+                    i = r-1 ;
+                    continue ;
+                }
+                // if(i == a || i == b || a == b) continue;
                     arr[b] = arr[a] ; 
                     arr[a] = arr[i] ;
                     arr[i] = brr[i] ;
+                    mp[arr[b]] = b;
+                    mp[arr[a]] = a;
                     tp.pb(make_tuple( i+1, a+1, b+1 ));
                     ans++ ;
-                }
+                // }
             }
         }
+
         loop(1,n,i){
             if(arr[i-1] > arr[i]) p=1;
         }
+
         if(ans <= m && p == 0){
-        cout << ans << endl ;
-        for(auto it : tp){
-            cout << get<0>(it) << " " << get<1>(it) << " " << get<2>(it) << endl ;
-        }
+            cout << ans << endl ;
+            for(auto it : tp){
+                cout << get<0>(it) << " " << get<1>(it) << " " << get<2>(it) << endl ;
+            }
         }
         else
         cout << -1 << endl ;
@@ -104,4 +170,4 @@ int main(){
     return 0 ;
 }
 
-// g++ x.cpp -o as && ./as
+// g++ TRPLSRT.CPP -o as && ./as
